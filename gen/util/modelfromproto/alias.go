@@ -1,5 +1,6 @@
 package modelfromproto
 
+// Alias is applied to Column or Table and changes it.
 type Alias interface {
 	ApplyToColumn(column *Column)
 	ApplyToTable(table *Table)
@@ -16,6 +17,7 @@ type changeName struct {
 	Name string
 }
 
+// ChangeName returns Alias which changes name of Column or Table
 func ChangeName(name string) Alias {
 	return changeName{Name: name}
 }
@@ -33,7 +35,8 @@ type changeColumn struct {
 	column *Column
 }
 
-func ChangeColumn(column *Column) Alias {
+// ReplaceColumn replaces Column with Column from param.
+func ReplaceColumn(column *Column) Alias {
 	return changeColumn{column: column}
 }
 

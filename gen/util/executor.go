@@ -12,11 +12,13 @@ import (
 	"github.com/jinzhu/inflection"
 )
 
+// TemplatesDir represents paths to files with templates. MainFile is a template to be executed.
 type TemplatesDir struct {
 	MainFile string
 	Path     string
 }
 
+// templateFunctions contains useful functions for rendering generator templates.
 var templateFunctions = template.FuncMap{
 	"flat":   ToFlat,
 	"snake":  strcase.ToSnake,
@@ -35,6 +37,7 @@ var templateFunctions = template.FuncMap{
 	},
 }
 
+// Execute executes templates from `dir` with `data` and writes result to `out`.
 func Execute(dir TemplatesDir, data interface{}, out string) error {
 	file, err := os.Create(out)
 	if err != nil {
@@ -68,6 +71,7 @@ func Execute(dir TemplatesDir, data interface{}, out string) error {
 	return nil
 }
 
+// FilesInDir returns list of files in `dir`.
 func FilesInDir(dir string) ([]string, error) {
 	var files []string
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
@@ -79,6 +83,7 @@ func FilesInDir(dir string) ([]string, error) {
 	return files, err
 }
 
+// SilentExecute is same as Execute but doesn't return an error.
 func SilentExecute(dir TemplatesDir, data interface{}, out string) {
 	if err := Execute(dir, data, out); err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)

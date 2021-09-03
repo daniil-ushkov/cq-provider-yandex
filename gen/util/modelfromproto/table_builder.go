@@ -9,6 +9,7 @@ import (
 	"github.com/jhump/protoreflect/desc/protoparse"
 )
 
+// TableBuilder is struct for creating Table from proto path
 type TableBuilder struct {
 	Service      string
 	Resource     string
@@ -25,6 +26,7 @@ type TableBuilder struct {
 	Parent *TableBuilder
 }
 
+// WithMessageFromProto specifies proto file to be parsed for creating Table
 func (tb *TableBuilder) WithMessageFromProto(messageName, pathToProto string, paths ...string) error {
 	parser := protoparse.Parser{IncludeSourceCodeInfo: true, ImportPaths: paths}
 
@@ -44,6 +46,7 @@ func (tb *TableBuilder) WithMessageFromProto(messageName, pathToProto string, pa
 	return nil
 }
 
+// Build builds Table
 func (tb *TableBuilder) Build() (*Table, error) {
 	if tb.MessageDesc == nil {
 		return nil, fmt.Errorf("source of MessageDesc wasn't specified")

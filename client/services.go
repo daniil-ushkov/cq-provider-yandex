@@ -17,6 +17,7 @@ import (
 	"github.com/yandex-cloud/go-sdk/gen/vpc"
 )
 
+// Services represents YC services
 type Services struct {
 	ApiGateway              *apigateway.Apigateway
 	CertificateManager      *certificatemanager.CertificateManager

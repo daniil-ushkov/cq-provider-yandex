@@ -34,7 +34,7 @@ type File struct {
 }
 
 var defaultYCOptions = []Option{
-	WithAlias("Id", ChangeColumn(
+	WithAlias("Id", ReplaceColumn(
 		&Column{
 			Name:        "id",
 			Type:        "schema.TypeString",
@@ -43,7 +43,7 @@ var defaultYCOptions = []Option{
 		},
 	),
 	),
-	WithAlias("FolderId", ChangeColumn(
+	WithAlias("FolderId", ReplaceColumn(
 		&Column{
 			Name:        "folder_id",
 			Type:        "schema.TypeString",
@@ -52,7 +52,7 @@ var defaultYCOptions = []Option{
 		},
 	),
 	),
-	WithAlias("CreatedAt", ChangeColumn(
+	WithAlias("CreatedAt", ReplaceColumn(
 		&Column{
 			Name:     "created_at",
 			Type:     "schema.TypeTimestamp",
@@ -60,7 +60,7 @@ var defaultYCOptions = []Option{
 		},
 	),
 	),
-	WithAlias("Labels", ChangeColumn(
+	WithAlias("Labels", ReplaceColumn(
 		&Column{
 			Name:        "labels",
 			Type:        "schema.TypeJSON",

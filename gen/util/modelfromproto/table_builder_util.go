@@ -10,12 +10,12 @@ import (
 	"github.com/jhump/protoreflect/desc"
 )
 
-type OneOfer interface {
+type oneOfer interface {
 	GetOneOf() *desc.OneOfDescriptor
 }
 
 func getCamelName(d desc.Descriptor) string {
-	if fd, ok := d.(OneOfer); ok && fd.GetOneOf() != nil {
+	if fd, ok := d.(oneOfer); ok && fd.GetOneOf() != nil {
 		return strcase.ToCamel(fd.GetOneOf().GetName()) + "." + strcase.ToCamel(d.GetName())
 	}
 	return strcase.ToCamel(d.GetName())

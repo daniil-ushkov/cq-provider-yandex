@@ -13,28 +13,24 @@ import (
 	"github.com/cloudquery/cq-provider-sdk/provider/schema"
 	"github.com/hashicorp/go-hclog"
 	"github.com/mitchellh/go-homedir"
-	"github.com/yandex-cloud/go-genproto/yandex/cloud/access"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/resourcemanager/v1"
 	ycsdk "github.com/yandex-cloud/go-sdk"
 	"github.com/yandex-cloud/go-sdk/iamkey"
 	"golang.org/x/sync/errgroup"
-	"google.golang.org/grpc"
 )
 
 const defaultFolderIdName = "<CHANGE_THIS_TO_YOUR_FOLDER_ID>"
 
-type AccessBindingsLister interface {
-	ListAccessBindings(ctx context.Context, in *access.ListAccessBindingsRequest, opts ...grpc.CallOption) (*access.ListAccessBindingsResponse, error)
-}
-
+// Client is a client of YC services
 type Client struct {
+	// fields from `config.hcl`
 	organizations []string
 	clouds        []string
 	folders       []string
 
 	logger hclog.Logger
 
-	// All yandex services initialized by client
+	// All YC services initialized by client
 	Services *Services
 	// S3 client to manage objects storages
 	S3Client *s3.S3
@@ -59,6 +55,7 @@ func (c Client) withResource(id string) *Client {
 	}
 }
 
+// Configure creates Client from parsed `config.hcl`
 func Configure(logger hclog.Logger, config interface{}) (schema.ClientMeta, error) {
 	providerConfig := config.(*Config)
 	clouds := providerConfig.CloudIDs
@@ -297,6 +294,7 @@ func validateFolders(folders []string) error {
 	return nil
 }
 
+// NewYandexClient creates YC client
 func NewYandexClient(log hclog.Logger, folders, clouds, organizations []string, services *Services, s3Client *s3.S3) *Client {
 	return &Client{
 		logger:        log,
