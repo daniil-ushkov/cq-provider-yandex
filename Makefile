@@ -5,7 +5,7 @@ NC=\033[0m
 # Provider generation
 
 cloudapi:
-	@git clone https://github.com/yandex-cloud/cloudapi.git
+	@git submodule update
 
 .PHONY: generate-resources
 generate-resources: cloudapi

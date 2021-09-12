@@ -29,12 +29,19 @@ func generate(resource string, pathToProto string) {
 
 	tableModel.Multiplex = fmt.Sprintf("client.MultiplexBy(client.%s)", inflection.Plural(resource))
 
+	sha, err := modelfromproto.RetrieveCurrentCommit("cloudapi")
+	if err != nil {
+		return
+	}
+
 	util.SilentExecute(util.TemplatesDir{
 		MainFile: "resource_manager.go.tmpl",
 		Path:     "templates",
 	}, map[string]interface{}{
-		"resource": resource,
-		"table":    tableModel,
+		"CloudAPIVersion": sha,
+		"PathToProto":     pathToProto,
+		"resource":        resource,
+		"table":           tableModel,
 	}, out)
 }
 

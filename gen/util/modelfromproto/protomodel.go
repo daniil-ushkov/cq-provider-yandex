@@ -1,5 +1,10 @@
 package modelfromproto
 
+import (
+	"os"
+	"path/filepath"
+)
+
 type Table struct {
 	// Should be in camel case
 	Service      string
@@ -30,8 +35,10 @@ type CreationOptions struct {
 }
 
 type File struct {
-	Table     *Table
-	Relations []*Table
+	CloudAPIVersion string
+	PathToProto     string
+	Table           *Table
+	Relations       []*Table
 }
 
 var defaultYCOptions = []Option{
@@ -96,7 +103,17 @@ func ResourceFileFromProto(service, resource, pathToProto string, opts ...Option
 	tableModel.Multiplex = "client.MultiplexBy(client.Folders)"
 	tableModel.DeleteFilter = "client.DeleteFolderFilter"
 
-	return &File{Table: tableModel, Relations: expandRelations(tableModel)}, nil
+	sha, err := RetrieveCurrentCommit("cloudapi")
+	if err != nil {
+		return nil, err
+	}
+
+	return &File{
+		CloudAPIVersion: sha,
+		PathToProto:     pathToProto,
+		Table:           tableModel,
+		Relations:       expandRelations(tableModel),
+	}, nil
 }
 
 func expandRelations(table *Table) (tables []*Table) {
@@ -105,4 +122,18 @@ func expandRelations(table *Table) (tables []*Table) {
 		tables = append(tables, relation)
 	}
 	return
+}
+
+func RetrieveCurrentCommit(pathToRoot string) (string, error) {
+	data, err := os.ReadFile(filepath.Join(pathToRoot, ".git", "HEAD"))
+	if err != nil {
+		return "", err
+	}
+	headPath := string(data[5 : len(data)-1])
+	data, err = os.ReadFile(filepath.Join(pathToRoot, ".git", headPath))
+	if err != nil {
+		return "", err
+	}
+	sha := string(data[:10])
+	return sha, nil
 }
