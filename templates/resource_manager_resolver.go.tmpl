@@ -1,0 +1,12 @@
+func fetchResourceManager{{.resource | plural}}(ctx context.Context, meta schema.ClientMeta, _ *schema.Resource, res chan interface{}) error {
+	c := meta.(*client.Client)
+
+	{{.resource | snake}}, err := c.Services.ResourceManager.{{.resource}}().Get(ctx, &resourcemanager.Get{{.resource}}Request{ {{- .resource}}Id: c.MultiplexedResourceId})
+	if err != nil {
+		return err
+	}
+
+	res <- {{.resource | snake}}
+
+	return nil
+}

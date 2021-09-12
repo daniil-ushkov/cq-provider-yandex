@@ -16,24 +16,31 @@ func ResourceManagerFolders() *schema.Table {
 		Resolver:    fetchResourceManagerFolders,
 		Multiplex:   client.MultiplexBy(client.Folders),
 		IgnoreError: client.IgnoreErrorHandler,
+
 		Columns: []schema.Column{
 			{
 				Name:            "id",
 				Type:            schema.TypeString,
 				Description:     "ID of the folder.",
-				Resolver:        client.ResolveResourceId,
+				Resolver:        schema.PathResolver("Id"),
 				CreationOptions: schema.ColumnCreationOptions{Nullable: false, Unique: true},
+			},
+			{
+				Name:        "cloud_id",
+				Type:        schema.TypeString,
+				Description: "ID of the cloud that the folder belongs to.",
+				Resolver:    schema.PathResolver("CloudId"),
 			},
 			{
 				Name:        "created_at",
 				Type:        schema.TypeTimestamp,
-				Description: "",
+				Description: "Creation timestamp.",
 				Resolver:    client.ResolveAsTime,
 			},
 			{
 				Name:        "name",
 				Type:        schema.TypeString,
-				Description: "Name of the folder. 3-63 characters long.",
+				Description: "Name of the folder.\n The name is unique within the cloud. 3-63 characters long.",
 				Resolver:    schema.PathResolver("Name"),
 			},
 			{
@@ -43,10 +50,16 @@ func ResourceManagerFolders() *schema.Table {
 				Resolver:    schema.PathResolver("Description"),
 			},
 			{
-				Name:        "organization_id",
+				Name:        "labels",
+				Type:        schema.TypeJSON,
+				Description: "Resource labels as `` key:value `` pairs. Maximum of 64 per resource.",
+				Resolver:    schema.PathResolver("Labels"),
+			},
+			{
+				Name:        "status",
 				Type:        schema.TypeString,
-				Description: "ID of the organization that the folder belongs to.",
-				Resolver:    schema.PathResolver("OrganizationId"),
+				Description: "Status of the folder.",
+				Resolver:    client.EnumPathResolver("Status"),
 			},
 		},
 	}

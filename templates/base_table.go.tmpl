@@ -3,7 +3,7 @@
 		Resolver:     fetch{{.Service}}{{.Resource | plural}},
 		Multiplex:    {{.Multiplex}},
 		IgnoreError:  client.IgnoreErrorHandler,
-		DeleteFilter: client.DeleteFolderFilter,
+		{{with .DeleteFilter}}DeleteFilter: {{.}},{{end}}
 		Columns: []schema.Column{
 {{range .Columns}}{{template "column.go.tmpl" .}}{{end}}
 		},

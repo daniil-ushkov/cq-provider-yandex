@@ -7,7 +7,8 @@ type Table struct {
 	AbsolutePath []string
 	RelativePath []string
 
-	Multiplex string
+	Multiplex    string
+	DeleteFilter string
 
 	Columns   []*Column
 	Relations []*Table
@@ -78,7 +79,6 @@ func ResourceFileFromProto(service, resource, pathToProto string, opts ...Option
 
 	b := TableBuilder{
 		Service:       service,
-		Multiplex:     "client.MultiplexBy(client.Folders)",
 		IgnoredFields: co.IgnoredFields,
 		Aliases:       co.Aliases,
 	}
@@ -92,6 +92,9 @@ func ResourceFileFromProto(service, resource, pathToProto string, opts ...Option
 	if err != nil {
 		return nil, err
 	}
+
+	tableModel.Multiplex = "client.MultiplexBy(client.Folders)"
+	tableModel.DeleteFilter = "client.DeleteFolderFilter"
 
 	return &File{Table: tableModel, Relations: expandRelations(tableModel)}, nil
 }

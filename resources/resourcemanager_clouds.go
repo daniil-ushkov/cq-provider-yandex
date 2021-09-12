@@ -16,18 +16,19 @@ func ResourceManagerClouds() *schema.Table {
 		Resolver:    fetchResourceManagerClouds,
 		Multiplex:   client.MultiplexBy(client.Clouds),
 		IgnoreError: client.IgnoreErrorHandler,
+
 		Columns: []schema.Column{
 			{
 				Name:            "id",
 				Type:            schema.TypeString,
 				Description:     "ID of the cloud.",
-				Resolver:        client.ResolveResourceId,
+				Resolver:        schema.PathResolver("Id"),
 				CreationOptions: schema.ColumnCreationOptions{Nullable: false, Unique: true},
 			},
 			{
 				Name:        "created_at",
 				Type:        schema.TypeTimestamp,
-				Description: "",
+				Description: "Creation timestamp.",
 				Resolver:    client.ResolveAsTime,
 			},
 			{

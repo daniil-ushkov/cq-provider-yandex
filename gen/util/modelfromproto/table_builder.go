@@ -11,10 +11,10 @@ import (
 
 type TableBuilder struct {
 	Service      string
-	Resource     string
+	resource     string
 	AbsolutePath string
 	RelativePath string
-	Multiplex    string
+	multiplex    string
 
 	MessageDesc *desc.MessageDescriptor
 
@@ -40,7 +40,7 @@ func (tb *TableBuilder) WithMessageFromProto(messageName, pathToProto string, pa
 		return fmt.Errorf("MessageDesc %s not found", messageName)
 	}
 
-	tb.Resource = getCamelName(tb.MessageDesc)
+	tb.resource = getCamelName(tb.MessageDesc)
 	return nil
 }
 
@@ -59,10 +59,10 @@ func (tb *TableBuilder) Build() (*Table, error) {
 
 	table := &Table{
 		Service:      tb.Service,
-		Resource:     tb.Resource,
+		Resource:     tb.resource,
 		AbsolutePath: split(tb.AbsolutePath),
 		RelativePath: split(tb.RelativePath),
-		Multiplex:    tb.Multiplex,
+		Multiplex:    tb.multiplex,
 		Columns:      tb.generateColumns(forColumns),
 		Relations:    relations,
 	}
@@ -145,7 +145,7 @@ func (tb *TableBuilder) appendIfRelation(columns []*Column) []*Column {
 		)
 
 		if tb.Parent.Field == nil {
-			parentName = strcase.ToSnake(tb.Resource)
+			parentName = strcase.ToSnake(tb.resource)
 			parentMsgDesc = tb.Parent.MessageDesc
 		} else {
 			parentName = tb.Parent.Field.getColumnName()
@@ -177,10 +177,10 @@ func (tb *TableBuilder) generateRelations(fields []expandedField) ([]*Table, err
 	for _, field := range fields {
 		builder := TableBuilder{
 			Service:       tb.Service,
-			Resource:      tb.Resource,
+			resource:      tb.resource,
 			AbsolutePath:  join(tb.AbsolutePath, field.getPath()),
 			RelativePath:  field.getPath(),
-			Multiplex:     "client.EmptyMultiplex",
+			multiplex:     "client.EmptyMultiplex",
 			MessageDesc:   field.GetMessageType(),
 			IgnoredFields: tb.IgnoredFields,
 			Aliases:       tb.Aliases,
