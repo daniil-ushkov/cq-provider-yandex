@@ -6,6 +6,4 @@ WORKDIR /app
 # Copy YC provider
 COPY . .
 
-WORKDIR resources
-RUN go test -c -o test
-CMD ./test -test.v
+CMD go test -v ./...

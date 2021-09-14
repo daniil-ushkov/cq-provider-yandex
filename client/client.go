@@ -63,9 +63,14 @@ func Configure(logger hclog.Logger, config interface{}) (schema.ClientMeta, erro
 	providerConfig := config.(*Config)
 	clouds := providerConfig.CloudIDs
 	folders := providerConfig.FolderIDs
+	apiEndpoint := os.Getenv("YC_API_ENDPOINT")
+
+	if apiEndpoint == "" {
+		apiEndpoint = providerConfig.ApiEndpoint
+	}
 
 	var err error
-	sdk, err := buildSDK()
+	sdk, err := buildSDK(apiEndpoint)
 	if err != nil {
 		return nil, err
 	}
@@ -100,14 +105,16 @@ func Configure(logger hclog.Logger, config interface{}) (schema.ClientMeta, erro
 	return client, nil
 }
 
-func buildSDK() (*ycsdk.SDK, error) {
+func buildSDK(apiEndpoint string) (*ycsdk.SDK, error) {
 	ctx := context.Background()
+
 	cred, err := getCredentials()
 	if err != nil {
 		return nil, err
 	}
 	sdk, err := ycsdk.Build(ctx, ycsdk.Config{
 		Credentials: cred,
+		Endpoint:    apiEndpoint,
 	})
 	if err != nil {
 		return nil, err

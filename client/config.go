@@ -2,6 +2,7 @@ package client
 
 // Config defines Provider Configuration
 type Config struct {
+	ApiEndpoint     string   `hcl:"api_endpoint,optional"`
 	OrganizationIDs []string `hcl:"organization_ids,optional"`
 	CloudIDs        []string `hcl:"cloud_ids,optional"`
 	FolderIDs       []string `hcl:"folder_ids,optional"`
